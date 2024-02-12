@@ -20,22 +20,24 @@ class AuthController {
             if(empty($alertas)) {
                 // Verificar quel el usuario exista
                 $usuario = Usuario::where('email', $usuario->email);
-                if(!$usuario || !$usuario->confirmado ) {
-                    Usuario::setAlerta('error', 'El Usuario No Existe o no esta confirmado');
-                } else {
-                    // El Usuario existe
-                    if( password_verify($_POST['password'], $usuario->password) ) {
-                        
-                        // Iniciar la sesión
-                        session_start();    
-                        $_SESSION['id'] = $usuario->id;
-                        $_SESSION['nombre'] = $usuario->nombre;
-                        $_SESSION['apellido'] = $usuario->apellido;
-                        $_SESSION['email'] = $usuario->email;
-                        $_SESSION['admin'] = $usuario->admin ?? null;
-                        
+                if($usuario instanceof Usuario) {
+                    if(!$usuario || !$usuario->confirmado ) {
+                        Usuario::setAlerta('error', 'El Usuario No Existe o no esta confirmado');
                     } else {
-                        Usuario::setAlerta('error', 'Password Incorrecto');
+                        // El Usuario existe
+                        if( password_verify($_POST['password'], $usuario->password) ) {
+                            
+                            // Iniciar la sesión
+                            session_start();    
+                            $_SESSION['id'] = $usuario->id;
+                            $_SESSION['nombre'] = $usuario->nombre;
+                            $_SESSION['apellido'] = $usuario->apellido;
+                            $_SESSION['email'] = $usuario->email;
+                            $_SESSION['admin'] = $usuario->admin ?? null;
+                            
+                        } else {
+                            Usuario::setAlerta('error', 'Password Incorrecto');
+                        }
                     }
                 }
             }
@@ -118,30 +120,31 @@ class AuthController {
             if(empty($alertas)) {
                 // Buscar el usuario
                 $usuario = Usuario::where('email', $usuario->email);
-
-                if($usuario && $usuario->confirmado) {
-
-                    // Generar un nuevo token
-                    $usuario->crearToken();
-                    unset($usuario->password2);
-
-                    // Actualizar el usuario
-                    $usuario->guardar();
-
-                    // Enviar el email
-                    $email = new Email( $usuario->email, $usuario->nombre, $usuario->token );
-                    $email->enviarInstrucciones();
-
-
-                    // Imprimir la alerta
-                    // Usuario::setAlerta('exito', 'Hemos enviado las instrucciones a tu email');
-
-                    $alertas['exito'][] = 'Hemos enviado las instrucciones a tu email';
-                } else {
-                 
-                    // Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
-
-                    $alertas['error'][] = 'El Usuario no existe o no esta confirmado';
+                if($usuario instanceof Usuario) {
+                    if($usuario && $usuario->confirmado) {
+    
+                        // Generar un nuevo token
+                        $usuario->crearToken();
+                        unset($usuario->password2);
+    
+                        // Actualizar el usuario
+                        $usuario->guardar();
+    
+                        // Enviar el email
+                        $email = new Email( $usuario->email, $usuario->nombre, $usuario->token );
+                        $email->enviarInstrucciones();
+    
+    
+                        // Imprimir la alerta
+                        // Usuario::setAlerta('exito', 'Hemos enviado las instrucciones a tu email');
+    
+                        $alertas['exito'][] = 'Hemos enviado las instrucciones a tu email';
+                    } else {
+                     
+                        // Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
+    
+                        $alertas['error'][] = 'El Usuario no existe o no esta confirmado';
+                    }
                 }
             }
         }
@@ -174,23 +177,24 @@ class AuthController {
 
             // Añadir el nuevo password
             $usuario->sincronizar($_POST);
-
-            // Validar el password
-            $alertas = $usuario->validarPassword();
-
-            if(empty($alertas)) {
-                // Hashear el nuevo password
-                $usuario->hashPassword();
-
-                // Eliminar el Token
-                $usuario->token = null;
-
-                // Guardar el usuario en la BD
-                $resultado = $usuario->guardar();
-
-                // Redireccionar
-                if($resultado) {
-                    header('Location: /');
+            if($usuario instanceof Usuario) {
+                // Validar el password
+                $alertas = $usuario->validarPassword();
+    
+                if(empty($alertas)) {
+                    // Hashear el nuevo password
+                    $usuario->hashPassword();
+    
+                    // Eliminar el Token
+                    $usuario->token = null;
+    
+                    // Guardar el usuario en la BD
+                    $resultado = $usuario->guardar();
+    
+                    // Redireccionar
+                    if($resultado) {
+                        header('Location: /');
+                    }
                 }
             }
         }
@@ -220,20 +224,22 @@ class AuthController {
 
         // Encontrar al usuario con este token
         $usuario = Usuario::where('token', $token);
-
-        if(empty($usuario)) {
-            // No se encontró un usuario con ese token
-            Usuario::setAlerta('error', 'Token No Válido');
-        } else {
-            // Confirmar la cuenta
-            $usuario->confirmado = 1;
-            $usuario->token = '';
-            unset($usuario->password2);
-            
-            // Guardar en la BD
-            $usuario->guardar();
-
-            Usuario::setAlerta('exito', 'Cuenta Comprobada Correctamente');
+    
+        if($usuario instanceof Usuario) {
+            if(empty($usuario)) {
+                // No se encontró un usuario con ese token
+                Usuario::setAlerta('error', 'Token No Válido');
+            } else {
+                // Confirmar la cuenta
+                $usuario->confirmado = 1;
+                $usuario->token = '';
+                unset($usuario->password2);
+                
+                // Guardar en la BD
+                $usuario->guardar();
+    
+                Usuario::setAlerta('exito', 'Cuenta Comprobada Correctamente');
+            }
         }
 
      
