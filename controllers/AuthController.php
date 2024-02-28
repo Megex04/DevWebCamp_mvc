@@ -20,24 +20,33 @@ class AuthController {
             if(empty($alertas)) {
                 // Verificar quel el usuario exista
                 $usuario = Usuario::where('email', $usuario->email);
+                if(!$usuario) {
+                    Usuario::setAlerta('error', 'El Usuario No Existe');
+                }
                 if($usuario instanceof Usuario) {
-                    if(!$usuario || !$usuario->confirmado ) {
-                        Usuario::setAlerta('error', 'El Usuario No Existe o no esta confirmado');
-                    } else {
-                        // El Usuario existe
-                        if( password_verify($_POST['password'], $usuario->password) ) {
-                            
-                            // Iniciar la sesión
-                            session_start();    
-                            $_SESSION['id'] = $usuario->id;
-                            $_SESSION['nombre'] = $usuario->nombre;
-                            $_SESSION['apellido'] = $usuario->apellido;
-                            $_SESSION['email'] = $usuario->email;
-                            $_SESSION['admin'] = $usuario->admin ?? null;
-                            
+                    if(!$usuario->confirmado) {
+                        Usuario::setAlerta('error', 'El Usuario No esta confirmado');
+                    }
+                    // El Usuario existe
+                    if( password_verify($_POST['password'], $usuario->password) ) {
+                        
+                        // Iniciar la sesión
+                        session_start();    
+                        $_SESSION['id'] = $usuario->id;
+                        $_SESSION['nombre'] = $usuario->nombre;
+                        $_SESSION['apellido'] = $usuario->apellido;
+                        $_SESSION['email'] = $usuario->email;
+                        $_SESSION['admin'] = $usuario->admin ?? null;
+                        
+                        // REDIRECCION
+                        if($usuario->admin) {
+                            header('Location: /admin/dashboard');
                         } else {
-                            Usuario::setAlerta('error', 'Password Incorrecto');
+                            header('Location: /finalizar-registro');
                         }
+
+                    } else {
+                        Usuario::setAlerta('error', 'Password Incorrecto');
                     }
                 }
             }
