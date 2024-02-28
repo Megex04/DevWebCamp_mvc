@@ -120,6 +120,11 @@ class AuthController {
             if(empty($alertas)) {
                 // Buscar el usuario
                 $usuario = Usuario::where('email', $usuario->email);
+                if(empty($usuario)) {
+
+                    // Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
+                    $alertas['error'][] = 'El Usuario no existe o no esta confirmado';
+                }
                 if($usuario instanceof Usuario) {
                     if($usuario && $usuario->confirmado) {
     
@@ -139,11 +144,6 @@ class AuthController {
                         // Usuario::setAlerta('exito', 'Hemos enviado las instrucciones a tu email');
     
                         $alertas['exito'][] = 'Hemos enviado las instrucciones a tu email';
-                    } else {
-                     
-                        // Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
-    
-                        $alertas['error'][] = 'El Usuario no existe o no esta confirmado';
                     }
                 }
             }
@@ -161,22 +161,22 @@ class AuthController {
         $token = s($_GET['token']);
 
         $token_valido = true;
-
+        
         if(!$token) header('Location: /');
 
         // Identificar el usuario con este token
         $usuario = Usuario::where('token', $token);
-
+        
         if(empty($usuario)) {
             Usuario::setAlerta('error', 'Token No Válido, intenta de nuevo');
             $token_valido = false;
         }
-
-
+        
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+            
             // Añadir el nuevo password
             $usuario->sincronizar($_POST);
+
             if($usuario instanceof Usuario) {
                 // Validar el password
                 $alertas = $usuario->validarPassword();
@@ -190,13 +190,13 @@ class AuthController {
     
                     // Guardar el usuario en la BD
                     $resultado = $usuario->guardar();
-    
                     // Redireccionar
                     if($resultado) {
-                        header('Location: /');
+                        header('Location: /login');
                     }
                 }
             }
+            
         }
 
         $alertas = Usuario::getAlertas();
@@ -205,7 +205,8 @@ class AuthController {
         $router->render('auth/reestablecer', [
             'titulo' => 'Reestablecer Password',
             'alertas' => $alertas,
-            'token_valido' => $token_valido
+            'token_valido' => $token_valido,
+            'token' => $token
         ]);
     }
 
@@ -224,22 +225,20 @@ class AuthController {
 
         // Encontrar al usuario con este token
         $usuario = Usuario::where('token', $token);
-    
+        if(empty($usuario)) {
+            // No se encontró un usuario con ese token
+            Usuario::setAlerta('error', 'Token No Válido');
+        }
         if($usuario instanceof Usuario) {
-            if(empty($usuario)) {
-                // No se encontró un usuario con ese token
-                Usuario::setAlerta('error', 'Token No Válido');
-            } else {
-                // Confirmar la cuenta
-                $usuario->confirmado = 1;
-                $usuario->token = '';
-                unset($usuario->password2);
-                
-                // Guardar en la BD
-                $usuario->guardar();
-    
-                Usuario::setAlerta('exito', 'Cuenta Comprobada Correctamente');
-            }
+            // Confirmar la cuenta
+            $usuario->confirmado = 1;
+            $usuario->token = '';
+            unset($usuario->password2);
+            
+            // Guardar en la BD
+            $usuario->guardar();
+
+            Usuario::setAlerta('exito', 'Cuenta Comprobada Correctamente');
         }
 
      
