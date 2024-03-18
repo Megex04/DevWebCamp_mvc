@@ -7,6 +7,12 @@
 
         let tags = [];
 
+        // recuperar del input oculto (CUANDO SE ACTUALIZA EL PONENTE)
+        if(tagsInputHidden.value !== '') {
+            tags = tagsInputHidden.value.split(',');
+            mostrarTags();
+        }
+
         tagsInput.addEventListener('keypress', guardarTag);
 
         function guardarTag(e) {
