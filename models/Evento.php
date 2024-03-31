@@ -16,6 +16,12 @@ class Evento extends ActiveRecord {
     public $hora_id;
     public $ponente_id;
 
+    // atributes para listar index GET
+    public $categoria;
+    public $dia;
+    public $hora;
+    public $ponente;
+
     public function __construct($args = []) {
         $this->id = $args['id'] ?? null;
         $this->nombre = $args['nombre'] ?? '';

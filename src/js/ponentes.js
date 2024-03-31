@@ -11,6 +11,20 @@
 
         ponentesInput.addEventListener('input', buscarPonentes);
 
+        if(ponenteHidden.value) {
+            (async () => {
+                const ponente = await obtenerPonente(ponenteHidden.value);
+                const {nombre, apellido} = ponente;
+
+                // insertar HTML
+                const ponenteDOM = document.createElement('li');
+                ponenteDOM.classList.add('listado-ponentes__ponente', 'listado-ponentes__ponente--seleccionado');
+                ponenteDOM.textContent = `${nombre} ${apellido}`;
+
+                listadoPonentes.appendChild(ponenteDOM);
+            })();
+        }
+
         async function obtenerPonentes() {
             const url = `/api/ponentes`;
 
@@ -18,6 +32,13 @@
             const resultado = await respuesta.json();
 
             formatearPonentes(resultado);
+        }
+        async function obtenerPonente(id) {
+            const url = `/api/ponente?id=${id}`;
+
+            const respuesta = await fetch(url);
+            const resultado = await respuesta.json();
+            return resultado;
         }
         function formatearPonentes(arrayPonentes = []) {
             ponentes = arrayPonentes.map(ponente => {
