@@ -11,7 +11,7 @@
     &__heading {
         color: v.$azul;
         margin: 5rem 0;
-        text-align: center;
+        text-align: left;
         font-size: clamp(2rem, -0.8rem + 8vw, 6rem);
     }
     &__fecha {
@@ -23,6 +23,17 @@
         #{$modificador}__heading {
             color: v.$secundario;
         }
+
+        .evento__informacion {
+            background-color: v.$secundario;
+            &:hover {
+                background-color: darken(v.$secundario, 10%);
+            }
+        }
+    }
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: rgba(v.$blanco, .5);
     }
 }
 .evento {
@@ -38,6 +49,14 @@
        &:hover {
            background-color: darken(v.$azul, 10%);
        }
+    }
+    &__nombre {
+        font-size: 2.1rem;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
     &__introduccion {
         font-size: 1.6rem;
