@@ -29,7 +29,7 @@
     <p class="speakers__descripcion">Conoce a nuestros expertos en DevWebCamp</p>
     <div class="speakers__grid">
         <?php foreach($ponentes as $ponente) { ?>
-            <div <?php aos_animacion(); ?> class="speaker">
+            <div <?php aos_animacion(); ?> data-aos-offset="-200"  class="speaker">
                 <picture>
                     <source srcset="/img/speakers/<?php echo $ponente->imagen; ?>.webp" type="image/webp">
                     <source srcset="/img/speakers/<?php echo $ponente->imagen; ?>.png" type="image/png">
@@ -95,19 +95,19 @@
     <h2 class="boletos__heading">Boletos & Precios</h2>
     <p class="boletos__descripcion">Precios para DevWebCamp</p>
     <div class="boletos__grid">
-        <div <?php aos_animacion(); ?> data-aos-duration="1000" class="boleto boleto--presencial">
+        <div <?php aos_animacion(); ?> data-aos-duration="1000" data-aos-offset="-300" class="boleto boleto--presencial">
             <h4 class="boleto__logo">&#60;DevWebCamp/></h4>
             <p class="boleto__plan">Presencial</p>
             <p class="boleto__precio">$199</p>
         </div>
 
-        <div <?php aos_animacion(); ?> data-aos-duration="1000" class="boleto boleto--virtual">
+        <div <?php aos_animacion(); ?> data-aos-duration="1000" data-aos-offset="-300" class="boleto boleto--virtual">
             <h4 class="boleto__logo">&#60;DevWebCamp/></h4>
             <p class="boleto__plan">Virtual</p>
             <p class="boleto__precio">$49</p>
         </div>
 
-        <div <?php aos_animacion(); ?> data-aos-duration="1000" class="boleto boleto--gratis">
+        <div <?php aos_animacion(); ?> data-aos-duration="1000" data-aos-offset="-300" class="boleto boleto--gratis">
             <h4 class="boleto__logo">&#60;DevWebCamp/></h4>
             <p class="boleto__plan">Gratis</p>
             <p class="boleto__precio">Gratis - $0</p>
