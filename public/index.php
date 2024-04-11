@@ -12,6 +12,7 @@ use Controllers\PaginasController;
 use Controllers\PonentesController;
 use Controllers\RegalosController;
 use Controllers\RegistradosController;
+use Controllers\RegistroController;
 
 $router = new Router();
 
@@ -62,6 +63,14 @@ $router->get('/api/ponente', [APIPonentes::class, 'ponente']);
 $router->get('/admin/registrados', [RegistradosController::class, 'index']);
 
 $router->get('/admin/regalos', [RegalosController::class, 'index']);
+
+// registro de usuarios
+$router->get('/finalizar-registro', [RegistroController::class, 'crear']);
+$router->post('/finalizar-registro/gratis', [RegistroController::class, 'gratis']);
+$router->post('/finalizar-registro/pagar', [RegistroController::class, 'pagar']);
+
+//boleto virtual
+$router->get('/boleto', [RegistroController::class, 'boleto']);
 
 // ** AREA PUBLICA **
 $router->get('/', [PaginasController::class, 'index']);
