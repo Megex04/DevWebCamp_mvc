@@ -45,7 +45,7 @@
     </div>
 </main>
 
-<script src="https://www.paypal.com/sdk/js?client-id=CLIENT_ID&components=buttons&disable-funding=venmo&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AblDgvXU-_MnrlTh6_DrOJUbdax_05SbLU4UprRrKpSTkBTRoNmreZMM76YfIFaz9Dby9BADfD3aB7kl&components=buttons&disable-funding=venmo&currency=USD"></script>
  
 <script>
     function initPayPalButton() {
@@ -66,8 +66,8 @@
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(orderData) {
  
-            // Full available details
-            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+            // Full TRAZA DE LA OPERACION - available details
+            //console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
  
             const datos = new FormData();
             datos.append('paquete_id', orderData.purchase_units[0].description);
