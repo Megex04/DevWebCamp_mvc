@@ -41,6 +41,7 @@
             </ul>
 
             <p class="paquete__precio">$49</p>
+            <div id="paypal-container-XXXXXX"></div>
         </div>
     </div>
 </main>
@@ -49,6 +50,8 @@
  
 <script>
     function initPayPalButton() {
+
+      // PASE PRESENCIAL
       paypal.Buttons({
         style: {
           shape: 'rect',
@@ -91,6 +94,50 @@
           console.log(err);
         }
       }).render('#paypal-container-MQ5WPZ4GAKGYU');
+
+      // PASE VIRTUAL
+      paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'blue',
+          layout: 'vertical',
+          label: 'pay',
+        },
+ 
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{"description":"2","amount":{"currency_code":"USD","value":49}}]
+          });
+        },
+ 
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(orderData) {
+ 
+            // Full TRAZA DE LA OPERACION - available details
+            //console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+ 
+            const datos = new FormData();
+            datos.append('paquete_id', orderData.purchase_units[0].description);
+            datos.append('pago_id', orderData.purchase_units[0].payments.captures[0].id);
+
+            fetch('/finalizar-registro/pagar', {
+                method: 'POST',
+                body: datos
+            })
+            .then(respuesta => respuesta.json())
+            .then(resultado => {
+                if(resultado.resultado) {
+                    actions.redirect(window.location.origin +`/finalizar-registro/conferencias`);
+                }
+            })
+            
+          });
+        },
+ 
+        onError: function(err) {
+          console.log(err);
+        }
+      }).render('#paypal-container-XXXXXX');
     }
  
   initPayPalButton();
