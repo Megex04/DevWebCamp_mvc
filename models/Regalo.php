@@ -9,6 +9,7 @@ class Regalo extends ActiveRecord {
 
     public $id;
     public $nombre;
+    public $total;
     
     public function __construct($args = [])
     {
