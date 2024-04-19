@@ -46,7 +46,7 @@
     </div>
 </main>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AblDgvXU-_MnrlTh6_DrOJUbdax_05SbLU4UprRrKpSTkBTRoNmreZMM76YfIFaz9Dby9BADfD3aB7kl&components=buttons&disable-funding=venmo&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=CLIENT_ID&components=buttons&disable-funding=venmo&currency=USD"></script>
  
 <script>
     function initPayPalButton() {
